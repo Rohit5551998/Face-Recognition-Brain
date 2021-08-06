@@ -13,6 +13,10 @@ const handleRegister = (req, res, db, bcrypt) => {
     //     joined: new Date()
     // })
 
+    if (!email || !name || !password) {
+        return res.status(400).json('Incorrect Form Submission');
+    }
+
     const hash = bcrypt.hashSync(password);
 
     db.transaction(trx => {
