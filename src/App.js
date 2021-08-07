@@ -49,6 +49,7 @@ const initialState = {
   input: "",
   imageUrl: "",
   box: {},
+  boxes: [],
   route: "signin",
   isSignedIn: false,
   user: {
@@ -90,24 +91,33 @@ class App extends Component {
   // }
 
   calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
+    let coordinateArray = [];
+    for (let i = 0; i < data.outputs[0].data.regions.length; i++) {
+      let clarifaiFace = data.outputs[0].data.regions[i].region_info.bounding_box;
+      coordinateArray.push({
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height),
+        index: i
+      });
     }
+    return coordinateArray;
   }
 
   displayFaceBox = (box) => {
     this.setState({ box: box });
   }
 
+  displayFaceBoxes = (boxes) => {
+    this.setState({ boxes: boxes });
+  }
+
   onInputChange = (event) => {
-    this.setState({ input: event.target.value, box: {} })
+    this.setState({ input: event.target.value, box: {}, boxes: [] })
   }
 
   onImageSubmit = () => {
@@ -122,11 +132,13 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response) {
+          const posArray = this.calculateFaceLocation(response);
           fetch('https://mighty-wildwood-42011.herokuapp.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              id: this.state.user.id
+              id: this.state.user.id,
+              faceCount: posArray.length
             })
           })
             .then(response => response.json())
@@ -134,8 +146,11 @@ class App extends Component {
               this.setState(Object.assign(this.state.user, { entries: count }))
             })
             .catch(console.log)
-
-          this.displayFaceBox(this.calculateFaceLocation(response))
+          if (posArray.length === 1) {
+            this.displayFaceBox(posArray[0]);
+          } else if (posArray.length > 1) {
+            this.displayFaceBoxes(posArray);
+          }
         }
       })
       .catch(err => console.log(err));
@@ -151,7 +166,7 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
+    const { isSignedIn, imageUrl, route, box, boxes } = this.state;
     return (
       <div className="App">
         <Particles className="particles"
@@ -166,7 +181,7 @@ class App extends Component {
                 onInputChange={this.onInputChange}
                 onImageSubmit={this.onImageSubmit}
               />
-              <FaceRecognition box={box} imageUrl={imageUrl} />
+              <FaceRecognition box={box} imageUrl={imageUrl} boxes={boxes} />
             </div>
             : (
               route === 'signin'
