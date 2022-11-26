@@ -7,43 +7,43 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
 import Rank from './components/Rank/Rank';
-import Particles from 'react-particles-js';
+// import Particles from 'react-tsparticles';
+import Particle from './components/Particles/Particles';
 
-
-
-const particlesOptions = {
-  particles: {
-    number: {
-      value: 60,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    }
-  }/* Configuring Interactivity,
-  interactivity: {
-    detect_on: "canvas",
-    events: {
-      onhover: {
-        enable: true,
-        mode: "repulse"
-      },
-      onclick: {
-        enable: true,
-        mode: "push"
-      }
-    }
-  },
-  modes: {
-    repulse: {
-      distance: 400,
-      duration: 0.4
-    },
-    push: {
-      particles_nb: 2
-    }
-  }*/
-}
+// Moved to Particles.config.js
+// const particlesOptions = {
+//   particles: {
+//     number: {
+//       value: 60,
+//       density: {
+//         enable: true,
+//         area: 800,
+//       }
+//     }
+//   }/* Configuring Interactivity,
+//   interactivity: {
+//     detect_on: "canvas",
+//     events: {
+//       onhover: {
+//         enable: true,
+//         mode: "repulse"
+//       },
+//       onclick: {
+//         enable: true,
+//         mode: "push"
+//       }
+//     }
+//   },
+//   modes: {
+//     repulse: {
+//       distance: 400,
+//       duration: 0.4
+//     },
+//     push: {
+//       particles_nb: 2
+//     }
+//   }*/
+// }
 
 const initialState = {
   input: "",
@@ -169,8 +169,7 @@ class App extends Component {
     const { isSignedIn, imageUrl, route, box, boxes } = this.state;
     return (
       <div className="App">
-        <Particles className="particles"
-          params={particlesOptions} />
+        <Particle className="particles" />
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {
           route === 'home'
