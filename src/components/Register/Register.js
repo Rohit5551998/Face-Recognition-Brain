@@ -25,7 +25,7 @@ class Register extends Component {
     }
 
     onSubmitSignIn = () => {
-        fetch('https://mighty-wildwood-42011.herokuapp.com/register', {
+        fetch(`${process.env.REACT_APP_API_URL}register`, {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -122,7 +122,7 @@ class App extends Component {
 
   onImageSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-    fetch('https://mighty-wildwood-42011.herokuapp.com/imageurl', {
+    fetch(`${process.env.REACT_APP_API_URL}imageurl`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -133,7 +133,7 @@ class App extends Component {
       .then(response => {
         if (response) {
           const posArray = this.calculateFaceLocation(response);
-          fetch('https://mighty-wildwood-42011.herokuapp.com/image', {
+          fetch(`${process.env.REACT_APP_API_URL}image`, {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -167,6 +167,7 @@ class App extends Component {
 
   render() {
     const { isSignedIn, imageUrl, route, box, boxes } = this.state;
+    console.log(process.env);
     return (
       <div className="App">
         <Particle className="particles" />

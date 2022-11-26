@@ -20,7 +20,7 @@ class SignIn extends Component {
     }
 
     onSubmitSignIn = () => {
-        fetch('https://mighty-wildwood-42011.herokuapp.com/signin', {
+        fetch(`${process.env.REACT_APP_API_URL}signin`, {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
